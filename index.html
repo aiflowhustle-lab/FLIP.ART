@@ -14,6 +14,7 @@
   src:url(sketchbook/newsreader.woff2) format('woff2')}
 
 :root{
+  --site-bg:#A4E7FE;
   --paper:#ece7dc;
   --ink:#2b2721;
   --ink-soft:rgba(43,39,33,.58);
@@ -29,22 +30,17 @@
 html,body{margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
 body{
-  font-family:var(--font);font-weight:400;background:var(--paper);color:var(--ink);
+  font-family:var(--font);font-weight:400;background:var(--site-bg);color:var(--ink);
   -webkit-font-smoothing:antialiased;overflow-x:hidden;
 }
 a{color:inherit;text-decoration:none}
 button{font:inherit}
 ::selection{background:rgba(43,39,33,.85);color:var(--paper)}
 
-/* the painted ground the whole page sits on */
+/* page background */
 .wash{
   position:fixed;inset:0;z-index:-2;pointer-events:none;
-  background:url(sketchbook/bg-wash.jpg) center top / cover no-repeat;
-  opacity:.85;
-}
-.wash:after{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(236,231,220,.25) 0%,rgba(236,231,220,.72) 58%,var(--paper) 88%);
+  background:var(--site-bg);
 }
 
 /* ---------------- top bar ---------------- */
@@ -665,7 +661,7 @@ html.mobile .sb-3d{perspective:1100px}
 html.mobile .sb-tilt{will-change:auto}
 html.mobile .sb-book{contain:layout paint style}
 html.mobile .curl{will-change:transform}
-html.mobile .wash{opacity:.72}
+html.mobile .wash{opacity:1}
 html.mobile .botany,html.mobile .hero-down{display:none}
 html.mobile .hero{min-height:auto;padding-top:clamp(88px,11svh,120px);padding-bottom:clamp(48px,7svh,72px)}
 html.mobile #about,html.mobile #plates,html.mobile #contact,html.mobile .rule,html.mobile .foot{
@@ -977,7 +973,7 @@ if(MOBILE)document.documentElement.classList.add('mobile');
 if(TABLET)document.documentElement.classList.add('tablet');
 if(APP)document.documentElement.classList.add('app');
 const DIR='sketchbook/';
-const SPREAD_FILE='newflip2.png';
+const SPREAD_FILE='newflip.png';
 const LIBRARY=Array.from({length:9},(_,i)=>({
   file:SPREAD_FILE,
   title:'Page '+String(i+1).padStart(2,'0'),
@@ -990,7 +986,7 @@ const IDB_STORE='images';
 const DEFAULT_CONFIGS=LIBRARY.map(p=>({kind:'gallery',file:p.file}));
 const SPREAD_W=3520, SPREAD_H=2480;
 const FRAME_TEMPLATE=DIR+SPREAD_FILE;
-const FRAME_VERSION=22;
+const FRAME_VERSION=21;
 const PAGE_ART={
   spread:{l:0.054,t:0.100,r:0.054,b:0.100},
   outerR:64
@@ -1706,7 +1702,7 @@ const loupeBtn=document.getElementById('loupeBtn');
 const zInBtn=document.getElementById('zIn'), zOutBtn=document.getElementById('zOut');
 const appLoupeBtn=document.getElementById('appLoupeBtn');
 const MAG=2.3;
-const DESK=getComputedStyle(document.documentElement).getPropertyValue('--paper').trim()||'#ece7dc';
+const DESK=getComputedStyle(document.documentElement).getPropertyValue('--site-bg').trim()||'#A4E7FE';
 let loupeOn=true, lx=null, ly=null, lgrab=null, lTarget=null;
 
 function loupeSize(){return Math.round(Math.max(165,Math.min(262,book.clientWidth*0.235)));}
