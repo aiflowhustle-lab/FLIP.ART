@@ -117,7 +117,7 @@ button{font:inherit}
 /* ---------------- sketchbook ---------------- */
 .hero,.hero *{-webkit-user-select:none;-moz-user-select:none;user-select:none}
 .hero img{-webkit-user-drag:none;user-drag:none}
-.sb-wrap{display:grid;justify-items:center;gap:20px;width:100%;position:relative;z-index:2;--pg:3%}
+.sb-wrap{display:grid;justify-items:center;gap:20px;width:100%;position:relative;z-index:2;--pg:10%}
 .sb-stage{
   display:flex;align-items:center;justify-content:center;width:100%;
   position:relative;
@@ -142,7 +142,7 @@ button{font:inherit}
   transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(var(--zoom,1));
   will-change:transform;
 }
-.sb-book{position:relative;width:100%;aspect-ratio:1024/721;transform-style:preserve-3d;z-index:1}
+.sb-book{position:relative;width:100%;aspect-ratio:1760/1240;transform-style:preserve-3d;z-index:1}
 
 /* The book sits on a surface, so its shadow is a soft pool underneath —
    no box, no filter on the artwork, nothing with an edge of its own.
@@ -677,7 +677,7 @@ html.mobile.turning .wash,html.mobile.turning .top,html.mobile.turning .sb-hint{
   html.mobile .sb-3d{
     max-width:none;
     flex:0 0 auto;
-    width:min(94vw,calc(78svh * 1024 / 721));
+    width:min(94vw,calc(78svh * 1760 / 1240));
   }
   html.mobile .sb-hint{font-size:10px;padding:0 12px}
 }
@@ -730,7 +730,7 @@ html.app .sb-stage{
 html.app .sb-3d{
   max-width:none;
   flex:0 0 auto;
-  width:min(96vw,calc(84svh * 1024 / 721));
+  width:min(96vw,calc(84svh * 1760 / 1240));
 }
 html.app .sb-cast{display:none!important}
 html.app .sb-full img,
@@ -1009,11 +1009,11 @@ const PAGE_STORE_LEGACY='sketchbook-page-files';
 const IDB_NAME='sketchbook-custom';
 const IDB_STORE='images';
 const DEFAULT_CONFIGS=LIBRARY.map(p=>({kind:'gallery',file:p.file}));
-const SPREAD_W=2048, SPREAD_H=1442;
+const SPREAD_W=3520, SPREAD_H=2480;
 const FRAME_TEMPLATE=DIR+SPREAD_FILE;
-const FRAME_VERSION=20;
+const FRAME_VERSION=21;
 const PAGE_ART={
-  spread:{l:0.028,t:0.028,r:0.028,b:0.036},
+  spread:{l:0.054,t:0.100,r:0.054,b:0.100},
   outerR:64
 };
 let frameTemplate=null;
@@ -1279,7 +1279,10 @@ async function loadCustomImages(){
       let blob=row.blob;
       const sourceBlob=row.sourceBlob||null;
       const panX=row.panX||0, panY=row.panY||0, zoom=row.zoom||1;
-      const needsUpgrade=sourceBlob&&(row.width<SPREAD_W||row.frameVersion<FRAME_VERSION);
+      const needsUpgrade=sourceBlob&&(
+        row.width<SPREAD_W||
+        row.frameVersion<FRAME_VERSION
+      );
       if(needsUpgrade){
         try{
           blob=await normalizeSpreadBlob(sourceBlob,{panX,panY,zoom});
