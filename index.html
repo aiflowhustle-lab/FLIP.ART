@@ -176,6 +176,7 @@ button{font:inherit}
 .sb-half.left{left:0}
 .sb-half.right{left:50%}
 .sb-half-img{width:200%;max-width:none;height:auto;display:block}
+.sb-half-img.device-spread{image-rendering:auto}
 .sb-half-img.right{margin-left:-100%}
 /* the shadow the lifting leaf throws onto the page beneath it */
 .gutter-shade{
@@ -1013,12 +1014,12 @@ const PAGE_STORE_LEGACY='sketchbook-page-files';
 const IDB_NAME='sketchbook-custom';
 const IDB_STORE='images';
 const DEFAULT_CONFIGS=LIBRARY.map(p=>({kind:'gallery',file:p.file}));
-const SPREAD_W=1760, SPREAD_H=1240;
+const SPREAD_W=3520, SPREAD_H=2480;
 const FRAME_TEMPLATE=DIR+'marina-bay-sands.png';
-const FRAME_VERSION=17;
+const FRAME_VERSION=18;
 const PAGE_ART={
   spread:{l:0.068,t:0.230,r:0.059,b:0.230},
-  outerR:32
+  outerR:64
 };
 let frameTemplate=null;
 function titleFromName(name){
@@ -1127,6 +1128,10 @@ function imageDims(im){
 function coverBleed(art){
   return Math.max(10,Math.round(Math.min(art.w,art.h)*0.028));
 }
+function prepCanvas(ctx){
+  ctx.imageSmoothingEnabled=true;
+  if('imageSmoothingQuality' in ctx)ctx.imageSmoothingQuality='high';
+}
 function drawPhotoCover(ctx,im,art,pan,bleed){
   const {w:pw,h:ph}=imageDims(im);
   if(!pw||!ph)throw new Error('bad dimensions');
@@ -1149,12 +1154,24 @@ function canvasToBlob(canvas){
         if(b)return resolve(b);
         try{resolve(dataURLToBlob(canvas.toDataURL('image/png')));}
         catch(e){reject(e);}
-      },'image/png');
+      },'image/png',1);
       return;
     }
     try{resolve(dataURLToBlob(canvas.toDataURL('image/png')));}
     catch(e){reject(e);}
   });
+}
+async function persistCustomRow(row){
+  if(!('indexedDB' in window))return;
+  try{
+    const db=await openIDB();
+    await new Promise((resolve,reject)=>{
+      const tx=db.transaction(IDB_STORE,'readwrite');
+      tx.objectStore(IDB_STORE).put(row);
+      tx.oncomplete=resolve;
+      tx.onerror=()=>reject(tx.error);
+    });
+  }catch(_){}
 }
 async function loadFrameTemplate(){
   if(frameTemplate)return frameTemplate;
@@ -1212,6 +1229,7 @@ async function normalizeSpreadBlob(blob,pan){
   const canvas=document.createElement('canvas');
   canvas.width=SPREAD_W;canvas.height=SPREAD_H;
   const ctx=canvas.getContext('2d');
+  prepCanvas(ctx);
   if(template)ctx.drawImage(template,0,0,SPREAD_W,SPREAD_H);
   else{ctx.fillStyle='#ece7dc';ctx.fillRect(0,0,SPREAD_W,SPREAD_H);}
   const art=spreadArtPx();
@@ -1255,15 +1273,27 @@ async function loadCustomImages(){
     });
     customImages=[];
     for(const row of rows){
-      const blob=row.blob;
+      let blob=row.blob;
       const sourceBlob=row.sourceBlob||null;
+      const panX=row.panX||0, panY=row.panY||0, zoom=row.zoom||1;
+      const needsUpgrade=sourceBlob&&(row.width<SPREAD_W||row.frameVersion<FRAME_VERSION);
+      if(needsUpgrade){
+        try{
+          blob=await normalizeSpreadBlob(sourceBlob,{panX,panY,zoom});
+          await persistCustomRow({
+            id:row.id,name:row.name,title:row.title||titleFromName(row.name),
+            blob,sourceBlob,width:SPREAD_W,height:SPREAD_H,
+            frameVersion:FRAME_VERSION,panX,panY,zoom
+          });
+        }catch(_){}
+      }
       customImages.push({
         id:row.id,name:row.name,
         title:titleFromName(row.title||row.name),
         place:'From device',url:URL.createObjectURL(blob),
         sourceBlob,
         sourceUrl:sourceBlob?URL.createObjectURL(sourceBlob):null,
-        panX:row.panX||0,panY:row.panY||0,zoom:row.zoom||1
+        panX,panY,zoom
       });
     }
   }catch(_){customImages=[];}
@@ -1363,6 +1393,7 @@ let strips=[];         /* the chain, kept for per-frame lighting       */
 function el(t,c){const e=document.createElement(t);if(c)e.className=c;return e}
 function imgEl(i,side){
   const im=new Image();im.className='sb-half-img '+side;
+  if(PAGES[i].kind==='device')im.classList.add('device-spread');
   im.draggable=false;im.decoding='async';im.alt='';im.src=PAGES[i].url;return im;
 }
 
