@@ -14,8 +14,8 @@
   src:url(sketchbook/newsreader.woff2) format('woff2')}
 
 :root{
-  --site-bg:#A4E7FE;
-  --paper:#ece7dc;
+  --paper:#b7c0db;
+  --page-paper:#f5f5f5;
   --ink:#2b2721;
   --ink-soft:rgba(43,39,33,.58);
   --ink-faint:rgba(43,39,33,.36);
@@ -30,7 +30,7 @@
 html,body{margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
 body{
-  font-family:var(--font);font-weight:400;background:var(--site-bg);color:var(--ink);
+  font-family:var(--font);font-weight:400;background:var(--paper);color:var(--ink);
   -webkit-font-smoothing:antialiased;overflow-x:hidden;
 }
 a{color:inherit;text-decoration:none}
@@ -40,7 +40,7 @@ button{font:inherit}
 /* page background */
 .wash{
   position:fixed;inset:0;z-index:-2;pointer-events:none;
-  background:var(--site-bg);
+  background:var(--paper);
 }
 
 /* ---------------- top bar ---------------- */
@@ -119,25 +119,22 @@ button{font:inherit}
   position:relative;
   touch-action:pan-y;
 }
-.sb-arrow{
-  flex:none;display:inline-flex;align-items:center;justify-content:center;padding:6px 2px;
-  border:0;background:transparent;color:var(--ink-faint);cursor:pointer;transition:color .2s;
-  -webkit-tap-highlight-color:transparent;z-index:8;
-}
-.sb-arrow:hover{color:var(--ink)}
 
 /* The box is the book's own untransformed frame: the loupe lives here, on
    the desk, while only .sb-tilt leans and scales underneath it. */
 .sb-3d{
   position:relative;flex:1 1;min-width:0;max-width:1024px;
   perspective:1750px;perspective-origin:50% 46%;
-  padding-bottom:clamp(22px,4.8%,58px);
+  padding-bottom:clamp(32px,6.5%,78px);
 }
 .sb-tilt{
   position:relative;
   transform-style:preserve-3d;
   transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(var(--zoom,1));
   will-change:transform;
+  filter:
+    drop-shadow(0 26px 38px rgba(32,38,58,.26))
+    drop-shadow(0 10px 22px rgba(32,38,58,.16));
 }
 .sb-book{position:relative;width:100%;aspect-ratio:1760/1240;transform-style:preserve-3d;z-index:1}
 
@@ -168,18 +165,20 @@ button{font:inherit}
   opacity:calc(1 - var(--shade,0) * .62);
 }
 /* newflip has a black letterbox — the in-book casts sit behind opaque pixels.
-   This pool sits on the cream desk below the spread, like the original sketchbook. */
+   This pool sits on the desk below the spread for a soft contact shadow. */
 .sb-desk-pool{
-  position:absolute;left:5%;right:5%;bottom:0;
-  height:clamp(34px,9%,92px);
+  position:absolute;left:3%;right:3%;
+  bottom:clamp(6px,1.6%,18px);
+  height:clamp(56px,16%,148px);
   pointer-events:none;z-index:0;
+  transform:translateY(-18%);
   background:
-    radial-gradient(52% 88% at 50% 18%,
-      rgba(58,44,26,.36) 0%,rgba(58,44,26,.18) 40%,rgba(58,44,26,0) 76%),
-    radial-gradient(46% 72% at 50% 42%,
-      rgba(44,32,14,.34) 0%,rgba(44,32,14,.14) 50%,rgba(44,32,14,0) 80%);
-  filter:blur(24px);
-  opacity:calc(1 - var(--shade,0) * .42);
+    radial-gradient(54% 92% at 50% 8%,
+      rgba(38,44,68,.48) 0%,rgba(38,44,68,.24) 38%,rgba(38,44,68,0) 74%),
+    radial-gradient(48% 78% at 50% 32%,
+      rgba(28,34,52,.40) 0%,rgba(28,34,52,.16) 48%,rgba(28,34,52,0) 82%);
+  filter:blur(28px);
+  opacity:calc(1 - var(--shade,0) * .34);
 }
 .sb-full{position:absolute;inset:0;overflow:hidden}
 .sb-full img{width:100%;height:auto;display:block}
@@ -263,17 +262,7 @@ button{font:inherit}
 }
 .loupe-unit.on{opacity:1}
 .loupe-unit.held .ring{cursor:grabbing}
-.loupe-mascot{
-  position:absolute;
-  width:calc(var(--lr,270px) * 1.15);
-  height:auto;
-  left:calc(var(--lr,270px) * 0.95);
-  top:calc(var(--lr,270px) * 0.10);
-  transform:scaleX(-1);
-  pointer-events:none;user-select:none;-webkit-user-drag:none;
-  z-index:0;
-  filter:drop-shadow(0 12px 20px rgba(58,44,26,.14));
-}
+.loupe-mascot{display:none}
 .loupe{
   position:absolute;left:0;top:0;
   width:var(--lr,270px);height:var(--lr,270px);
@@ -398,9 +387,6 @@ button{font:inherit}
 @media (max-width:640px){
   .hero-kicker{font-size:10.5px;letter-spacing:.16em}
   .sb-wrap{width:100vw;margin-inline:calc(50% - 50vw)}
-  .sb-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:70;padding:12px 6px}
-  .sb-arrow.left{left:2px}
-  .sb-arrow.right{right:2px}
   .sb-3d{max-width:none}
   .sb-hint{font-size:9.5px;letter-spacing:.1em;padding:0 16px;text-align:center}
 }
@@ -602,7 +588,7 @@ html.app .photo-crop-panel{background:#fff}
   position:relative;width:100%;max-width:520px;margin:0 auto;
   border-radius:32px;overflow:hidden;
   touch-action:none;cursor:grab;
-  background:#1a1612;
+  background:var(--page-paper);
 }
 .photo-crop-viewport.dragging{cursor:grabbing}
 .photo-crop-viewport canvas{width:100%;height:auto;display:block;vertical-align:top}
@@ -661,7 +647,6 @@ html.mobile .sb-3d{perspective:1100px}
 html.mobile .sb-tilt{will-change:auto}
 html.mobile .sb-book{contain:layout paint style}
 html.mobile .curl{will-change:transform}
-html.mobile .wash{opacity:1}
 html.mobile .botany,html.mobile .hero-down{display:none}
 html.mobile .hero{min-height:auto;padding-top:clamp(88px,11svh,120px);padding-bottom:clamp(48px,7svh,72px)}
 html.mobile #about,html.mobile #plates,html.mobile #contact,html.mobile .rule,html.mobile .foot{
@@ -838,9 +823,6 @@ html.app .app-status{display:block}
         <filter id="sb-mblur-2"><feGaussianBlur stdDeviation="14 0"/></filter>
       </svg>
       <div class="sb-stage" id="sbStage">
-        <button class="sb-arrow left" id="sbLeft" aria-label="previous page">
-          <svg viewBox="0 0 14 44" width="14" height="44" fill="none" aria-hidden="true"><polyline points="11,3 3,22 11,41" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
         <div class="sb-3d" id="sb3d">
           <div class="sb-tilt" id="sbTilt">
             <div class="sb-cast ambient" aria-hidden="true"></div>
@@ -850,14 +832,10 @@ html.app .app-status{display:block}
           </div>
           <div class="sb-desk-pool" aria-hidden="true"></div>
           <div class="zoomwrap" id="zoomWrap" aria-hidden="true"><div class="zoominner" id="zoomInner"></div></div>
-          <div class="loupe-unit has-mascot" id="loupeUnit">
-            <img class="loupe-mascot" src="sketchbook/chibi-mascot.png" alt="" draggable="false" aria-hidden="true">
+          <div class="loupe-unit" id="loupeUnit">
             <div class="loupe" id="loupe"><span class="grip"></span><span class="ring"><span class="lens" id="loupeLens"><span class="mag" id="loupeMag"></span></span></span></div>
           </div>
         </div>
-        <button class="sb-arrow right" id="sbRight" aria-label="next page">
-          <svg viewBox="0 0 14 44" width="14" height="44" fill="none" aria-hidden="true"><polyline points="3,3 11,22 3,41" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
       </div>
       <div class="sb-captions" id="sbCaptions"></div>
       <div class="sb-tools" role="group" aria-label="view controls">
@@ -933,9 +911,9 @@ html.app .app-status{display:block}
       </div>
       <div class="photo-crop-zoom">
         <label for="photoCropZoom">Zoom</label>
-        <input type="range" id="photoCropZoom" min="100" max="240" value="100" step="1">
+        <input type="range" id="photoCropZoom" min="20" max="240" value="100" step="1">
       </div>
-      <p class="photo-crop-hint">Drag to reposition · slide to zoom</p>
+      <p class="photo-crop-hint">Drag to reposition · zoom out to fit the whole photo with white margins</p>
     </div>
     <div class="photo-crop-foot">
       <button class="picker-btn" id="photoCropCancel" type="button">Cancel</button>
@@ -986,11 +964,12 @@ const IDB_STORE='images';
 const DEFAULT_CONFIGS=LIBRARY.map(p=>({kind:'gallery',file:p.file}));
 const SPREAD_W=3520, SPREAD_H=2480;
 const FRAME_TEMPLATE=DIR+SPREAD_FILE;
-const FRAME_VERSION=21;
+const FRAME_VERSION=23;
 const PAGE_ART={
   spread:{l:0.054,t:0.100,r:0.054,b:0.100},
   outerR:64
 };
+const PAGE_PAPER=getComputedStyle(document.documentElement).getPropertyValue('--page-paper').trim()||'#f5f5f5';
 let frameTemplate=null;
 function titleFromName(name){
   const base=(name||'Your photo').replace(/\.[^.]+$/,'').replace(/[-_]+/g,' ').trim()||'Your photo';
@@ -1185,20 +1164,49 @@ function spreadArtPx(){
     r:{tl:PAGE_ART.outerR,bl:PAGE_ART.outerR,tr:PAGE_ART.outerR,br:PAGE_ART.outerR}
   };
 }
+function photoFitMetrics(art,pw,ph){
+  const cover=Math.max(art.w/pw,art.h/ph);
+  const contain=Math.min(art.w/pw,art.h/ph);
+  const fitAllZoom=contain/cover;
+  return {
+    cover,contain,fitAllZoom,
+    minZoom:Math.max(0.12,fitAllZoom*0.45),
+    maxZoom:2.4
+  };
+}
 function photoCoverRect(art,pw,ph,panX,panY,zoom){
-  const z=zoom||1;
-  const scale=Math.max(art.w/pw,art.h/ph)*z;
+  const fit=photoFitMetrics(art,pw,ph);
+  const z=Math.max(fit.minZoom,Math.min(fit.maxZoom,zoom||1));
+  const scale=fit.cover*z;
   const uw=pw*scale, uh=ph*scale;
   let ox=art.x+(art.w-uw)/2+(panX||0);
   let oy=art.y+(art.h-uh)/2+(panY||0);
-  ox=Math.max(art.x+art.w-uw, Math.min(art.x, ox));
-  oy=Math.max(art.y+art.h-uh, Math.min(art.y, oy));
+  const minOx=uw>=art.w?art.x+art.w-uw:art.x;
+  const maxOx=uw>=art.w?art.x:art.x+art.w-uw;
+  const minOy=uh>=art.h?art.y+art.h-uh:art.y;
+  const maxOy=uh>=art.h?art.y:art.y+art.h-uh;
+  ox=Math.max(minOx,Math.min(maxOx,ox));
+  oy=Math.max(minOy,Math.min(maxOy,oy));
   return {
     ox,oy,uw,uh,
     panX:ox-(art.x+(art.w-uw)/2),
     panY:oy-(art.y+(art.h-uh)/2),
     zoom:z
   };
+}
+function templateArtRect(im){
+  const {w:tw,h:th}=imageDims(im);
+  if(!tw||!th)return null;
+  const p=PAGE_ART.spread;
+  return {x:tw*p.l,y:th*p.t,w:tw*(1-p.l-p.r),h:th*(1-p.t-p.b)};
+}
+function drawCropPaper(ctx,template,art){
+  ctx.fillStyle=PAGE_PAPER;
+  ctx.fillRect(art.x,art.y,art.w,art.h);
+  if(!template)return;
+  const src=templateArtRect(template);
+  if(!src||src.w<1||src.h<1)return;
+  ctx.drawImage(template,src.x,src.y,src.w,src.h,art.x,art.y,art.w,art.h);
 }
 async function normalizeSpreadBlob(blob,pan){
   const user=await bitmapFromBlob(blob);
@@ -1209,14 +1217,12 @@ async function normalizeSpreadBlob(blob,pan){
   const ctx=canvas.getContext('2d');
   prepCanvas(ctx);
   if(template)ctx.drawImage(template,0,0,SPREAD_W,SPREAD_H);
-  else{ctx.fillStyle='#ece7dc';ctx.fillRect(0,0,SPREAD_W,SPREAD_H);}
+  else{ctx.fillStyle=PAGE_PAPER;ctx.fillRect(0,0,SPREAD_W,SPREAD_H);}
   const art=spreadArtPx();
   const bleed=coverBleed(art);
   ctx.save();
   roundRectPath(ctx,art.x,art.y,art.w,art.h,art.r);
   ctx.clip();
-  ctx.fillStyle='#f2ebe0';
-  ctx.fillRect(art.x-6,art.y-6,art.w+12,art.h+12);
   drawPhotoCover(ctx,user,art,pan,bleed);
   ctx.restore();
   const mid=SPREAD_W/2, gw=Math.max(3,Math.round(SPREAD_W*0.004));
@@ -1467,6 +1473,15 @@ function paint(){
     if(typeof syncZoomLayer==='function')syncZoomLayer();
     if(typeof placeLoupe==='function')placeLoupe();
   }
+  refreshSpreadHint();
+}
+function refreshSpreadHint(){
+  if(!hint||hint.classList.contains('gone'))return;
+  const page=PAGES[idx];
+  const custom=page&&page.kind==='device'?customImages.find(c=>c.id===page.id):null;
+  hint.textContent=(custom&&custom.sourceBlob)
+    ?'Drag to turn · Tap your photo to adjust · Drag the glass'
+    :'Drag the page to turn · Drag the glass across it';
 }
 function caption(){
   capBox.textContent='';
@@ -1607,6 +1622,7 @@ function hideHint(){hint.classList.add('gone')}
 
 stage.addEventListener('pointerdown',e=>{
   if(e.button!==0)return;
+  if(!photoCrop.hidden||!pagePicker.hidden)return;
   e.preventDefault();                     /* no text selection, no image drag */
   const onBook=e.target.closest('.sb-zone');
   stage.setPointerCapture(e.pointerId);
@@ -1614,13 +1630,27 @@ stage.addEventListener('pointerdown',e=>{
   if(!onBook||introOn)return;
   const r=bookRect();
   const dir=(e.clientX-r.left)/r.width>0.5?'next':'prev';
+  if(!turn&&editableSpreadCustom(idx)&&spreadArtHit(e.clientX,e.clientY)){
+    drag={probeEdit:true,x0:e.clientX,y0:e.clientY,w:r.width,moved:0,tPrev:performance.now()};
+    return;
+  }
   startTurn(dir,0);
-  drag={dir:dir,x0:e.clientX,w:r.width,moved:0,vel:0,tPrev:performance.now()};
+  drag={dir:dir,x0:e.clientX,y0:e.clientY,w:r.width,moved:0,vel:0,tPrev:performance.now()};
 });
 stage.addEventListener('pointermove',e=>{
   if(!drag)return;
-  const dx=e.clientX-drag.x0;
-  drag.moved=Math.max(drag.moved,Math.abs(dx));
+  const dx=e.clientX-drag.x0, dy=e.clientY-drag.y0;
+  drag.moved=Math.max(drag.moved,Math.abs(dx),Math.abs(dy));
+  if(drag.probeEdit){
+    if(drag.moved<6)return;
+    const flipDir=(drag.x0-(bookRect().left))/drag.w>0.5?'next':'prev';
+    drag.probeEdit=false;
+    drag.dir=flipDir;
+    drag.vel=0;
+    drag.tPrev=performance.now();
+    startTurn(flipDir,0);
+  }
+  if(!turn)return;
   const raw=(drag.dir==='next'? -dx : dx)/(drag.w*0.62);
   const t=Math.max(0,Math.min(1,raw));
   const now=performance.now();
@@ -1631,8 +1661,15 @@ stage.addEventListener('pointermove',e=>{
 function endDrag(e){
   if(!drag)return;
   const d=drag;drag=null;
+  if(d.probeEdit){
+    if(d.moved<6&&tryOpenSpreadPlacementEdit(d.x0,d.y0))return;
+    const dir=(d.x0-bookRect().left)/d.w>0.5?'next':'prev';
+    startTurn(dir,0);
+    commit();
+    return;
+  }
   if(!turn)return;
-  if(d.moved<6){                              /* a tap, not a drag */
+  if(d.moved<6){
     commit();return;
   }
   const go = turn.t>0.42 || d.vel>1.1;
@@ -1680,8 +1717,6 @@ function goTo(i){
   if(Math.min(fwd,back)===1){step(fwd===1?'next':'prev');return;}
   idx=i;paint();
 }
-document.getElementById('sbLeft').onclick=()=>step('prev');
-document.getElementById('sbRight').onclick=()=>step('next');
 addEventListener('keydown',e=>{
   if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;
   if(!pagePicker.hidden)return;
@@ -1702,7 +1737,7 @@ const loupeBtn=document.getElementById('loupeBtn');
 const zInBtn=document.getElementById('zIn'), zOutBtn=document.getElementById('zOut');
 const appLoupeBtn=document.getElementById('appLoupeBtn');
 const MAG=2.3;
-const DESK=getComputedStyle(document.documentElement).getPropertyValue('--site-bg').trim()||'#A4E7FE';
+const DESK=getComputedStyle(document.documentElement).getPropertyValue('--paper').trim()||'#ece7dc';
 let loupeOn=true, lx=null, ly=null, lgrab=null, lTarget=null;
 
 function loupeSize(){return Math.round(Math.max(165,Math.min(262,book.clientWidth*0.235)));}
@@ -1992,6 +2027,8 @@ function openPhotoCrop(file,opts){
       const bitmap=await bitmapFromBlob(file instanceof Blob?file:file);
       const {w:pw,h:ph}=imageDims(bitmap);
       if(!pw||!ph)throw new Error('bad dimensions');
+      let template=null;
+      try{template=await loadFrameTemplate();}catch(_){}
       const aspect=cropArtAspect();
       const viewW=Math.min(520,Math.max(280,window.innerWidth*0.86));
       const viewH=viewW/aspect;
@@ -2006,7 +2043,12 @@ function openPhotoCrop(file,opts){
       const editing=!!opts.initialPan;
       photoCropTitle.textContent=editing?'Adjust placement':'Position your photo';
       photoCropConfirm.textContent=editing?'Save placement':'Use photo';
-      photoCropZoom.value=String(Math.round(Math.max(100,Math.min(240,pan.zoom*100))));
+      const fit=photoFitMetrics(art,pw,ph);
+      const zMin=Math.round(fit.minZoom*100);
+      const zMax=Math.round(fit.maxZoom*100);
+      photoCropZoom.min=String(zMin);
+      photoCropZoom.max=String(zMax);
+      photoCropZoom.value=String(Math.round(Math.max(zMin,Math.min(zMax,(pan.zoom||1)*100))));
       let drag=null;
       const dpr=Math.min(window.devicePixelRatio||1,2);
       photoCropCanvas.width=Math.round(viewW*dpr);
@@ -2017,8 +2059,10 @@ function openPhotoCrop(file,opts){
       ctx.setTransform(dpr,0,0,dpr,0,0);
       function redraw(){
         ctx.clearRect(0,0,viewW,viewH);
+        drawCropPaper(ctx,template,art);
         const cover=drawPhotoCover(ctx,bitmap,art,pan,0);
         pan.panX=cover.panX;pan.panY=cover.panY;pan.zoom=cover.zoom;
+        photoCropZoom.value=String(Math.round(cover.zoom*100));
       }
       redraw();
       photoCrop.hidden=false;
@@ -2065,7 +2109,31 @@ function openPhotoCrop(file,opts){
     }
   });
 }
-async function adjustDevicePhoto(customId){
+function spreadArtHit(clientX,clientY){
+  const r=bookRect();
+  if(!r.width||!r.height)return false;
+  const x=(clientX-r.left)/r.width;
+  const y=(clientY-r.top)/r.height;
+  const p=PAGE_ART.spread;
+  return x>=p.l&&x<=1-p.r&&y>=p.t&&y<=1-p.b;
+}
+function editableSpreadCustom(pageIdx){
+  const page=PAGES[pageIdx];
+  if(!page||page.kind!=='device')return null;
+  const custom=customImages.find(c=>c.id===page.id);
+  return (custom&&custom.sourceBlob)?custom:null;
+}
+function tryOpenSpreadPlacementEdit(clientX,clientY){
+  if(introOn||!photoCrop.hidden||!pagePicker.hidden)return false;
+  if(turn&&turn.t>0.04)return false;
+  const pageIdx=turn?turn.from:idx;
+  const custom=editableSpreadCustom(pageIdx);
+  if(!custom||!spreadArtHit(clientX,clientY))return false;
+  openSpreadPlacementEdit(custom.id);
+  return true;
+}
+async function openSpreadPlacementEdit(customId,opts){
+  opts=opts||{};
   const custom=customImages.find(c=>c.id===customId);
   if(!custom||!custom.sourceBlob){
     setUploadStatus('Re-upload this photo to adjust placement.');
@@ -2077,8 +2145,9 @@ async function adjustDevicePhoto(customId){
     });
     setUploadStatus('Updating placement…');
     await updateCustomImage(customId,crop.file,crop.pan);
-    renderPagePicker();
-    setUploadStatus('Placement updated for page '+(pickerSlot+1));
+    if(opts.fromPicker)renderPagePicker();
+    const pageNum=PAGES.findIndex(p=>p.kind==='device'&&p.id===customId);
+    setUploadStatus('Placement saved'+(pageNum>=0?' on page '+(pageNum+1):'')+'.');
   }catch(err){
     if(err==='cancel'){
       setUploadStatus('Placement edit cancelled.');
@@ -2086,6 +2155,9 @@ async function adjustDevicePhoto(customId){
     }
     setUploadStatus('Could not adjust photo'+(err&&err.message?(': '+err.message):'')+'.');
   }
+}
+async function adjustDevicePhoto(customId){
+  await openSpreadPlacementEdit(customId,{fromPicker:true});
 }
 async function handleDeviceUpload(file,opts){
   if(!file){
@@ -2159,7 +2231,8 @@ function requestNativeComposite(pan){
     window.webkit.messageHandlers.sketchbook.postMessage({
       action:'compositePhoto',
       panX:pan.panX||0,
-      panY:pan.panY||0
+      panY:pan.panY||0,
+      zoom:pan.zoom||1
     });
   });
 }
