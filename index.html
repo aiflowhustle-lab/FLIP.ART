@@ -117,7 +117,7 @@ button{font:inherit}
 /* ---------------- sketchbook ---------------- */
 .hero,.hero *{-webkit-user-select:none;-moz-user-select:none;user-select:none}
 .hero img{-webkit-user-drag:none;user-drag:none}
-.sb-wrap{display:grid;justify-items:center;gap:20px;width:100%;position:relative;z-index:2}
+.sb-wrap{display:grid;justify-items:center;gap:20px;width:100%;position:relative;z-index:2;--pg:3%}
 .sb-stage{
   display:flex;align-items:center;justify-content:center;width:100%;
   position:relative;
@@ -133,7 +133,7 @@ button{font:inherit}
 /* The box is the book's own untransformed frame: the loupe lives here, on
    the desk, while only .sb-tilt leans and scales underneath it. */
 .sb-3d{
-  position:relative;flex:1 1;min-width:0;max-width:900px;
+  position:relative;flex:1 1;min-width:0;max-width:1024px;
   perspective:1750px;perspective-origin:50% 46%;
 }
 .sb-tilt{
@@ -142,7 +142,7 @@ button{font:inherit}
   transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(var(--zoom,1));
   will-change:transform;
 }
-.sb-book{position:relative;width:100%;aspect-ratio:1760/1240;transform-style:preserve-3d;z-index:1}
+.sb-book{position:relative;width:100%;aspect-ratio:1024/721;transform-style:preserve-3d;z-index:1}
 
 /* The book sits on a surface, so its shadow is a soft pool underneath —
    no box, no filter on the artwork, nothing with an edge of its own.
@@ -677,7 +677,7 @@ html.mobile.turning .wash,html.mobile.turning .top,html.mobile.turning .sb-hint{
   html.mobile .sb-3d{
     max-width:none;
     flex:0 0 auto;
-    width:min(94vw,calc(78svh * 1760 / 1240));
+    width:min(94vw,calc(78svh * 1024 / 721));
   }
   html.mobile .sb-hint{font-size:10px;padding:0 12px}
 }
@@ -730,7 +730,7 @@ html.app .sb-stage{
 html.app .sb-3d{
   max-width:none;
   flex:0 0 auto;
-  width:min(96vw,calc(84svh * 1760 / 1240));
+  width:min(96vw,calc(84svh * 1024 / 721));
 }
 html.app .sb-cast{display:none!important}
 html.app .sb-full img,
@@ -998,27 +998,22 @@ if(MOBILE)document.documentElement.classList.add('mobile');
 if(TABLET)document.documentElement.classList.add('tablet');
 if(APP)document.documentElement.classList.add('app');
 const DIR='sketchbook/';
-const LIBRARY=[
-  {file:'marina-bay-sands.png',   title:'Marina Bay Sands',          place:'Bayfront'},
-  {file:'gardens-by-the-bay.png', title:'Gardens by the Bay',        place:'Supertree Grove'},
-  {file:'merlion.png',            title:'The Merlion',               place:'Merlion Park'},
-  {file:'buddha-tooth.png',       title:'Buddha Tooth Relic Temple', place:'Chinatown'},
-  {file:'joo-chiat.png',          title:'Joo Chiat Shophouses',      place:'Katong'},
-  {file:'lau-pa-sat.png',         title:'Lau Pa Sat',                place:'Raffles Quay'},
-  {file:'marina-bay-skyline.png', title:'Marina Bay Skyline',        place:'The Bay'},
-  {file:'singapore-river.png',    title:'Singapore River',           place:'Boat Quay'},
-  {file:'botanic-gardens.png',    title:'Botanic Gardens',           place:'Tanglin'}
-];
-const PAGE_STORE='sketchbook-pages-v2';
+const SPREAD_FILE='newflip.png';
+const LIBRARY=Array.from({length:9},(_,i)=>({
+  file:SPREAD_FILE,
+  title:'Page '+String(i+1).padStart(2,'0'),
+  place:''
+}));
+const PAGE_STORE='sketchbook-pages-v3';
 const PAGE_STORE_LEGACY='sketchbook-page-files';
 const IDB_NAME='sketchbook-custom';
 const IDB_STORE='images';
 const DEFAULT_CONFIGS=LIBRARY.map(p=>({kind:'gallery',file:p.file}));
-const SPREAD_W=3520, SPREAD_H=2480;
-const FRAME_TEMPLATE=DIR+'marina-bay-sands.png';
-const FRAME_VERSION=18;
+const SPREAD_W=2048, SPREAD_H=1442;
+const FRAME_TEMPLATE=DIR+SPREAD_FILE;
+const FRAME_VERSION=20;
 const PAGE_ART={
-  spread:{l:0.068,t:0.230,r:0.059,b:0.230},
+  spread:{l:0.028,t:0.028,r:0.028,b:0.036},
   outerR:64
 };
 let frameTemplate=null;
@@ -1028,13 +1023,20 @@ function titleFromName(name){
   return base;
 }
 function pageDisplayTitle(page){
-  if(!page||page.kind==='device')return '';
+  if(!page)return '';
+  if(page.kind==='device')return '';
+  if(page.url&&page.url.endsWith(SPREAD_FILE))return '';
   return page.title||'';
 }
-function galleryPage(file){
-  const hit=LIBRARY.find(p=>p.file===file);
-  const base=hit?{...hit}:{...LIBRARY[0]};
-  return {...base,kind:'gallery',url:DIR+base.file};
+function blankSpreadPage(meta){
+  const base=meta||LIBRARY[0];
+  return {
+    ...base,kind:'gallery',file:SPREAD_FILE,
+    url:DIR+SPREAD_FILE
+  };
+}
+function galleryPage(){
+  return blankSpreadPage(LIBRARY[0]);
 }
 function devicePage(custom){
   return {
@@ -1067,6 +1069,7 @@ function loadPages(){
     }
     const configs=JSON.parse(raw);
     if(!Array.isArray(configs)||configs.length!==DEFAULT_CONFIGS.length)return null;
+    if(configs.some(c=>c.kind==='gallery'&&c.file&&c.file!==SPREAD_FILE))return null;
     return configs;
   }catch(_){return null;}
 }
@@ -1967,7 +1970,7 @@ function renderPagePicker(){
     b.onclick=()=>{pickerSlot=i;renderPagePicker();};
     li.appendChild(b);pageSlotList.appendChild(li);
   });
-  renderImageChoice(imageGrid,LIBRARY,'gallery',img=>applyPageAssignment(pickerSlot,{kind:'gallery',file:img.file}));
+  renderImageChoice(imageGrid,LIBRARY,'gallery',img=>applyPageAssignment(pickerSlot,{kind:'gallery',file:SPREAD_FILE}));
   renderImageChoice(deviceGrid,customImages,'device',img=>applyPageAssignment(pickerSlot,{kind:'device',id:img.id}));
   deviceEmpty.hidden=customImages.length>0;
   deviceGrid.hidden=customImages.length===0;
