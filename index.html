@@ -875,46 +875,7 @@ html.app .app-status{display:block}
       </div>
       <p class="sb-hint" id="sbHint">Drag the page to turn · Drag the glass across it</p>
     </div>
-
-    <button class="hero-down" id="heroDown" aria-label="scroll to about">
-      <svg viewBox="0 0 44 22" width="34" height="17" fill="none" aria-hidden="true">
-        <polyline points="3,3 22,11 41,3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
-        <polyline points="3,11 22,19 41,11" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
   </section>
-
-  <div class="rule" aria-hidden="true"></div>
-
-  <section id="about" class="about">
-    <div>
-      <p class="section-label">About</p>
-      <p class="bio">Meng To is a designer and teacher in Singapore. He founded <a class="bio-link" href="https://designcode.io" target="_blank" rel="noopener">Design+Code</a>, where he teaches designers code and developers design, and builds <a class="bio-link" href="https://aura.build" target="_blank" rel="noopener">Aura</a> and <a class="bio-link" href="https://dreamcut.ai" target="_blank" rel="noopener">DreamCut</a>.</p>
-      <p class="bio">This sketchbook is the slower half of that. The city looked at properly, in ink and a little colour: shophouse shutters, hawker tents, the bay at dusk.</p>
-    </div>
-    <img class="bloom" src="sketchbook/bloom.png" alt="" aria-hidden="true">
-  </section>
-
-  <div class="rule short" aria-hidden="true"></div>
-
-  <section id="plates" class="plates">
-    <p class="section-label">Plates</p>
-    <ol class="plate-list" id="plateList"></ol>
-  </section>
-
-  <div class="rule short" aria-hidden="true"></div>
-
-  <section id="contact" class="contact">
-    <p class="section-label">Contact</p>
-    <p class="bio">Write to me at <a class="bio-link" href="mailto:meng@designcode.io">meng@designcode.io</a>. I read everything, and I answer most of it.</p>
-    <p class="contact-social">
-      <a class="bio-link" href="https://x.com/MengTo" target="_blank" rel="me noopener">X</a>
-      <a class="bio-link" href="https://www.linkedin.com/in/mengto" target="_blank" rel="me noopener">LinkedIn</a>
-      <a class="bio-link" href="https://www.instagram.com/mengto" target="_blank" rel="me noopener">Instagram</a>
-    </p>
-  </section>
-
-  <p class="foot">Singapore · Sketchbook</p>
 </main>
 
 <div class="page-picker" id="pagePicker" role="dialog" aria-modal="true" aria-labelledby="pagePickerTitle" hidden>
@@ -1734,9 +1695,6 @@ addEventListener('keydown',e=>{
   e.preventDefault();hideHint();
   step(e.key==='ArrowRight'?'next':'prev');
 });
-document.getElementById('heroDown').onclick=()=>{
-  document.getElementById('about').scrollIntoView({behavior:'smooth',block:'start'});
-};
 
 /* --------------------------------------------------- loupe + controls */
 const loupeUnit=document.getElementById('loupeUnit');
@@ -1887,6 +1845,7 @@ zOutBtn.onclick=zoomOut;
 /* --------------------------------------------------------- the index */
 const plateList=document.getElementById('plateList');
 function buildPlateList(){
+  if(!plateList)return;
   plateList.textContent='';
   PAGES.forEach((p,i)=>{
     const li=el('li');
@@ -1900,6 +1859,7 @@ function buildPlateList(){
   });
 }
 function marks(){
+  if(!plateList)return;
   const cur=turn?turn.to:idx;
   plateList.querySelectorAll('.plate').forEach((b,i)=>b.setAttribute('aria-current',i===cur?'true':'false'));
 }
