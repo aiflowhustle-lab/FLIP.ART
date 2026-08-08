@@ -977,7 +977,7 @@ if(MOBILE)document.documentElement.classList.add('mobile');
 if(TABLET)document.documentElement.classList.add('tablet');
 if(APP)document.documentElement.classList.add('app');
 const DIR='sketchbook/';
-const SPREAD_FILE='newflip.png';
+const SPREAD_FILE='newflip2.png';
 const LIBRARY=Array.from({length:9},(_,i)=>({
   file:SPREAD_FILE,
   title:'Page '+String(i+1).padStart(2,'0'),
@@ -990,7 +990,7 @@ const IDB_STORE='images';
 const DEFAULT_CONFIGS=LIBRARY.map(p=>({kind:'gallery',file:p.file}));
 const SPREAD_W=3520, SPREAD_H=2480;
 const FRAME_TEMPLATE=DIR+SPREAD_FILE;
-const FRAME_VERSION=21;
+const FRAME_VERSION=22;
 const PAGE_ART={
   spread:{l:0.054,t:0.100,r:0.054,b:0.100},
   outerR:64
