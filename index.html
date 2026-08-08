@@ -625,8 +625,8 @@ html.app .photo-crop-panel{background:#fff}
   color:var(--ink-faint);text-align:center;margin-top:clamp(48px,7vh,84px);padding-bottom:44px}
 
 /* ---------------- mobile / touch performance ---------------- */
-html.mobile:not(.app) .sb-cast{display:none}
-html.mobile:not(.app) .sb-desk-pool{display:none}
+html.mobile:not(.tablet):not(.app) .sb-cast{display:none}
+html.mobile:not(.tablet):not(.app) .sb-desk-pool{display:none}
 html.mobile .top:before{
   -webkit-backdrop-filter:none;backdrop-filter:none;
   background:linear-gradient(180deg,rgba(240,236,226,.98),rgba(240,236,226,.88) 48%,rgba(240,236,226,0));
@@ -646,6 +646,7 @@ html.mobile .gutter-shade{opacity:calc(var(--shade,0) * .38)}
 html.mobile .sb-3d{perspective:1100px}
 html.mobile .sb-tilt{will-change:auto}
 html.mobile .sb-book{contain:layout paint style}
+html.mobile.tablet .sb-book{contain:layout style}
 html.mobile .curl{will-change:transform}
 html.mobile .botany,html.mobile .hero-down{display:none}
 html.mobile .hero{min-height:auto;padding-top:clamp(88px,11svh,120px);padding-bottom:clamp(48px,7svh,72px)}
