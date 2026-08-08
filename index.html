@@ -1047,9 +1047,9 @@ function devicePage(custom){
 function resolvePage(config){
   if(config&&config.kind==='device'){
     const custom=customImages.find(c=>c.id===config.id);
-    return custom?devicePage(custom):galleryPage(LIBRARY[0].file);
+    return custom?devicePage(custom):galleryPage();
   }
-  return galleryPage((config&&config.file)||LIBRARY[0].file);
+  return galleryPage();
 }
 function pageConfig(page){
   return page.kind==='device'?{kind:'device',id:page.id}:{kind:'gallery',file:page.file};
