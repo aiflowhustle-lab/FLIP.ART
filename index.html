@@ -135,6 +135,7 @@ button{font:inherit}
 .sb-3d{
   position:relative;flex:1 1;min-width:0;max-width:1024px;
   perspective:1750px;perspective-origin:50% 46%;
+  padding-bottom:clamp(22px,4.8%,58px);
 }
 .sb-tilt{
   position:relative;
@@ -169,6 +170,20 @@ button{font:inherit}
     rgba(40,28,10,.34) 0%,rgba(40,28,10,0) 76%);
   filter:blur(4px);
   opacity:calc(1 - var(--shade,0) * .62);
+}
+/* newflip has a black letterbox — the in-book casts sit behind opaque pixels.
+   This pool sits on the cream desk below the spread, like the original sketchbook. */
+.sb-desk-pool{
+  position:absolute;left:5%;right:5%;bottom:0;
+  height:clamp(34px,9%,92px);
+  pointer-events:none;z-index:0;
+  background:
+    radial-gradient(52% 88% at 50% 18%,
+      rgba(58,44,26,.36) 0%,rgba(58,44,26,.18) 40%,rgba(58,44,26,0) 76%),
+    radial-gradient(46% 72% at 50% 42%,
+      rgba(44,32,14,.34) 0%,rgba(44,32,14,.14) 50%,rgba(44,32,14,0) 80%);
+  filter:blur(24px);
+  opacity:calc(1 - var(--shade,0) * .42);
 }
 .sb-full{position:absolute;inset:0;overflow:hidden}
 .sb-full img{width:100%;height:auto;display:block}
@@ -629,6 +644,7 @@ html.app .photo-crop-panel{background:#fff}
 
 /* ---------------- mobile / touch performance ---------------- */
 html.mobile:not(.app) .sb-cast{display:none}
+html.mobile:not(.app) .sb-desk-pool{display:none}
 html.mobile .top:before{
   -webkit-backdrop-filter:none;backdrop-filter:none;
   background:linear-gradient(180deg,rgba(240,236,226,.98),rgba(240,236,226,.88) 48%,rgba(240,236,226,0));
@@ -733,6 +749,7 @@ html.app .sb-3d{
   width:min(96vw,calc(84svh * 1760 / 1240));
 }
 html.app .sb-cast{display:none!important}
+html.app .sb-desk-pool{display:none!important}
 html.app .sb-full img,
 html.app .sb-half-img,
 html.app .sb-book img{
@@ -835,6 +852,7 @@ html.app .app-status{display:block}
             <div class="sb-cast hair" aria-hidden="true"></div>
             <div class="sb-book" id="sbBook"></div>
           </div>
+          <div class="sb-desk-pool" aria-hidden="true"></div>
           <div class="zoomwrap" id="zoomWrap" aria-hidden="true"><div class="zoominner" id="zoomInner"></div></div>
           <div class="loupe-unit has-mascot" id="loupeUnit">
             <img class="loupe-mascot" src="sketchbook/chibi-mascot.png" alt="" draggable="false" aria-hidden="true">
