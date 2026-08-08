@@ -23,6 +23,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       # the whole repo is the site: one html file plus sketchbook/
       - uses: actions/upload-pages-artifact@v3
         with:
